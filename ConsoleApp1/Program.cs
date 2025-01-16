@@ -21,20 +21,28 @@ namespace ConsoleApp1
             public string Formula { get; set; } = formula;
             public double Weight { get; set; } = weight;
         }
-        Matrix SolveEquation(Matrix equation)
+        Matrix SolveLinearSystem(Matrix system)
         {
-            Matrix matrix = new(equation.Rows, equation.Cols - 1);  // Matriz de coeficientes
-            for (int i = 0; i < equation.Rows; i++)
-                for (int j = 0; j < equation.Cols - 1; j++)
-                    matrix[i, j] = equation[i, j];
+            Matrix coefficients = new(system.Rows, system.Cols - 1);  // Matriz de coeficientes
+            for (int i = 0; i < system.Rows; i++)
+                for (int j = 0; j < system.Cols - 1; j++)
+                    coefficients[i, j] = system[i, j];
 
-            Matrix results = new(equation.Rows, 1); // Matriz de términos independientes
-            for (int i = 0; i < equation.Rows; i++)
-                results[i, 0] = equation[i, equation.Cols - 1];
+            Matrix results = new(system.Rows, 1); // Matriz de términos independientes
+            for (int i = 0; i < system.Rows; i++)
+                results[i, 0] = system[i, system.Cols - 1];
 
-            Matrix invMatrix = matrix.Inverse();
-            Matrix solution = invMatrix * results;
-            return solution;
+            try
+            {
+                Matrix invMatrix = coefficients.Inverse();
+                Matrix solution = invMatrix * results;
+                return solution;
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine("System has no solution");
+                return new Matrix(2, 2);
+            }
         }
     }
 }
