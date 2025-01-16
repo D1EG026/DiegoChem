@@ -13,6 +13,8 @@ namespace ConsoleApp1
 
             var atoms = PeriodicTable.elements;
             Console.WriteLine($"Atom: atomic number{atoms[s].number} atomic weight{atoms[s].weight} {atoms[s].valence.Length} valence numbers");
+            //Do a test to check that solveequation works
+
         }
         // Aqui uso el "primary constructor" para definir la clase (definir constructor y la clase a la vez)
         public class Molecule(string name, string formula, double weight)
@@ -46,3 +48,5 @@ namespace ConsoleApp1
         }
     }
 }
+
+
