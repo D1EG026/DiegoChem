@@ -1,7 +1,9 @@
-﻿namespace ConsoleApp1
-{
+﻿using System.Numerics;
+using System.Linq;
 
-    class Program
+namespace ConsoleApp1
+{
+    partial class Program
     {
         static void Main(string[] args)
         {
@@ -18,6 +20,21 @@
             public string Name { get; set; } = name;
             public string Formula { get; set; } = formula;
             public double Weight { get; set; } = weight;
+        }
+        Matrix SolveEquation(Matrix equation)
+        {
+            Matrix matrix = new(equation.Rows, equation.Cols - 1);  // Matriz de coeficientes
+            for (int i = 0; i < equation.Rows; i++)
+                for (int j = 0; j < equation.Cols - 1; j++)
+                    matrix[i, j] = equation[i, j];
+
+            Matrix results = new(equation.Rows, 1); // Matriz de términos independientes
+            for (int i = 0; i < equation.Rows; i++)
+                results[i, 0] = equation[i, equation.Cols - 1];
+
+            Matrix invMatrix = matrix.Inverse();
+            Matrix solution = invMatrix * results;
+            return solution;
         }
     }
 }
