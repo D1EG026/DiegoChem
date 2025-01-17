@@ -79,18 +79,16 @@ public struct Matrix(int rows, int cols)
     public float Determinant()
     {
         if (Rows != Cols)
-        {
             throw new InvalidOperationException("Matrix must be square");
-        }
+        
         if (Rows == 2)
-        {
             return Data[0, 0] * Data[1, 1] - Data[0, 1] * Data[1, 0];
-        }
+        
+        
         float det = 0;
         for (int i = 0; i < Cols; i++)
-        {
             det += (i % 2 == 0 ? 1 : -1) * Data[0, i] * Minor(0, i).Determinant();
-        }
+        
         return det;
     }
     /// <summary>
