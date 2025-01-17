@@ -5,6 +5,7 @@ namespace ConsoleApp1
     /// </summary>
     public static class PeriodicTable
     {
+        public static string GetSymbol(int atomicNumber) => elements.FirstOrDefault(x => x.Value.number == atomicNumber).Key;
         public static readonly Dictionary<string, AtomData> elements = new()
             {
                 { "H", new AtomData(1, 1.008f, [1]) },

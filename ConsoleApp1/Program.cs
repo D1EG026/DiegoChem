@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 using System.Linq;
-
 namespace ConsoleApp1
 {
     partial class Program
@@ -8,54 +7,45 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
             Console.WriteLine("What atom here?");
-            string s = Console.ReadLine();
-
-
+            //string s = Console.ReadLine();
+            string s = "NaOH";
             var atoms = PeriodicTable.elements;
-            Console.WriteLine($"Atom: atomic number{atoms[s].number} atomic weight{atoms[s].weight} {atoms[s].valence.Length} valence numbers");
-            //Do a test to check that solveequation works
-
-            Matrix matrix = new(3, 3);
-            matrix[0, 0] = 1;
-            matrix[0, 1] = 2;
-            matrix[0, 2] = 3;
-            matrix[1, 0] = 3;
-            matrix[1, 1] = 4;
-            matrix[1, 2] = 5;
-            matrix[2, 0] = -2;
-            matrix[2, 1] = 0;
-            matrix[2, 2] = -1;
-            Matrix inverse = matrix.Inverse();
-
-            Matrix expectedInverse = new Matrix(3, 3);
-            expectedInverse[0, 0] = 1.0f / 3.0f;
-            expectedInverse[0, 1] = 4.0f / 3.0f;
-            expectedInverse[0, 2] = -2.0f / 3.0f;
-            expectedInverse[1, 0] = 1.0f / 3.0f;
-            expectedInverse[1, 1] = 5.0f / 6.0f;
-            expectedInverse[1, 2] = -2.0f / 3.0f;
-            expectedInverse[2, 0] = -1.0f / 3.0f;
-            expectedInverse[2, 1] = 2.0f / 3.0f;
-            expectedInverse[2, 2] = -1.0f / 3.0f;
-            Console.WriteLine("Matrix: ");
-            for (int i = 0; i < inverse.Rows; i++)
+            //Console.WriteLine($"Atom: atomic number{atoms[s].number} atomic weight{atoms[s].weight} {atoms[s].valence.Length} valence numbers");
+            List<AtomData> inputAtoms = MoleculeToAtoms(s, atoms);
+            foreach (var atom in inputAtoms)
             {
-                for (int j = 0; j < inverse.Cols; j++)
-                {
-                    Console.Write(inverse[i, j]);
-                }
-                Console.WriteLine();
+                Console.WriteLine(PeriodicTable.GetSymbol(atom.number));
             }
-            Console.WriteLine("Expected");
-            for (int i = 0; i < expectedInverse.Rows; i++)
+        }
+        // Por ahora solo moléculas con un átomo de cada
+        private static List<AtomData> MoleculeToAtoms(string s, Dictionary<string, AtomData> atoms)
+        {
+            List<AtomData> currentAtoms = [];
+            for (int i = 0; i < s.Length; i++)
             {
-                for (int j = 0; j < expectedInverse.Cols; j++)
+                if (s[i].ToString().IsUpperCase())
                 {
-                    Console.Write(expectedInverse[i, j]);
+                    if (i != s.Length - 1 && !s[i + 1].ToString().IsUpperCase())
+                        currentAtoms.Add(atoms[s[i].ToString() + s[i + 1].ToString()]); // Mayúscula-minúscula --> mismo elemento
+                    else
+                        currentAtoms.Add(atoms[s[i].ToString()]);                       // Mayúscula-mayúscula --> otro elemento
+                }
+            }
+            return currentAtoms;
+        }
+
+        private static void PrintMatrix(Matrix matrix)
+        {
+            for (int i = 0; i < matrix.Rows; i++)
+            {
+                for (int j = 0; j < matrix.Cols; j++)
+                {
+                    Console.Write(matrix[i, j]);
                 }
                 Console.WriteLine();
             }
         }
+
         // Aqui uso el "primary constructor" para definir la clase (definir constructor y la clase a la vez)
         public class Molecule(string name, string formula, double weight)
         {
