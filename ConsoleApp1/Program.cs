@@ -8,7 +8,7 @@ namespace ConsoleApp1
         {
             Console.WriteLine("What atom here?");
             //string s = Console.ReadLine();
-            string s = "NaOH";
+            string s = "Fe2S3";
             var atoms = PeriodicTable.elements;
             //Console.WriteLine($"Atom: atomic number{atoms[s].number} atomic weight{atoms[s].weight} {atoms[s].valence.Length} valence numbers");
             List<AtomData> inputAtoms = MoleculeToAtoms(s, atoms);
@@ -17,18 +17,37 @@ namespace ConsoleApp1
                 Console.WriteLine(PeriodicTable.GetSymbol(atom.number));
             }
         }
-        // Por ahora solo moléculas con un átomo de cada
+        // Por ahora sin paréntesis
         private static List<AtomData> MoleculeToAtoms(string s, Dictionary<string, AtomData> atoms)
         {
             List<AtomData> currentAtoms = [];
+            AtomData atomToadd = null;
             for (int i = 0; i < s.Length; i++)
             {
-                if (s[i].ToString().IsUpperCase())
+                if (s[i].ToString().IsUpperCase())  // Letra mayúscula
                 {
-                    if (i != s.Length - 1 && !s[i + 1].ToString().IsUpperCase())
-                        currentAtoms.Add(atoms[s[i].ToString() + s[i + 1].ToString()]); // Mayúscula-minúscula --> mismo elemento
+                    int nextPossibleNumberIndex;
+                    if (i != s.Length - 1 && s[i + 1].ToString().IsLowerCase())
+                    {
+                        atomToadd = atoms[s[i].ToString() + s[i + 1].ToString()]; // Mayúscula-minúscula --> mismo elemento
+                        nextPossibleNumberIndex = i + 2;
+                    }
                     else
-                        currentAtoms.Add(atoms[s[i].ToString()]);                       // Mayúscula-mayúscula --> otro elemento
+                    {
+                        atomToadd = atoms[s[i].ToString()];                       // Mayúscula-mayúscula --> otro elemento
+                        nextPossibleNumberIndex = i + 1;
+                    }
+                    if (nextPossibleNumberIndex >= s.Length || !s[nextPossibleNumberIndex].ToString().IsNumber())   // Si no hay número despues del átomo
+                        currentAtoms.Add(atomToadd);
+                }
+                else if (s[i].ToString().IsNumber()) // Número
+                {
+                    for (int k = 0; k < int.Parse(s[i].ToString()); k++)
+                    {
+                        currentAtoms.Add(atomToadd);
+                    }
+                    //while (j < s.Length && s[j].ToString().IsNumber())
+                    //   j++;
                 }
             }
             return currentAtoms;
