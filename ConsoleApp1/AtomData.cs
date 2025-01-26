@@ -1,16 +1,13 @@
+
+
 namespace ConsoleApp1
 {
-    public record AtomData
+    public readonly struct AtomData(int number, float weight, int[] valence)
     {
-        public int number;
-        public float weight;
-        public int[] valence;
+        public readonly int number = number;
+        public readonly float weight = weight;
+        public readonly int[] valence = valence;
 
-        public AtomData(int number, float weight, int[] valence)
-        {
-            this.number = number;
-            this.weight = weight;
-            this.valence = valence;
-        }
+        public static implicit operator Token(AtomData atom) => new(atom);
     }
 }
