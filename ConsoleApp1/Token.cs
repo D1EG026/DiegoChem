@@ -1,34 +1,12 @@
 namespace ConsoleApp1
 {
-    public struct Token
+    public struct Token(AtomData atom = default, string text = null, int count = 1)
     {
-        public AtomData Atom;
-        public string Text;
-        public int Count;
-
-        public Token(AtomData atom = default, string text = null, int count = 1)
-        {
-            Atom = atom;
-            Text = text;
-            Count = count;
-        }
+        public AtomData Atom = atom;
+        public string Text = text;
+        public int Count = count;
         //public static implicit operator AtomData(Token token) => token.Atom;
     }
-    // public struct ParenthesisToken(int number)
-    // {
-    //     public int Number = number;
-    // }
-    // public struct AtomToken
-    // {
-    //      public AtomData Atom;
-    //     public int Count;
-
-    //     public AtomToken(AtomData atom, int count = 1)
-    //     {
-    //         Atom = atom;
-    //         Count = count;
-    //     }
-    // }
 }
 
 
