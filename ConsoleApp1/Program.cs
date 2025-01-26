@@ -9,46 +9,42 @@ namespace ConsoleApp1
         {
             Console.WriteLine("What atom here?");
             //string s = Console.ReadLine();
-            string s = "H2ClNe2H3";
+            string s = "H2Cl(Ne2H3)2";
             var atoms = PeriodicTable.elements;
             //Console.WriteLine($"Atom: atomic number{atoms[s].number} atomic weight{atoms[s].weight} {atoms[s].valence.Length} valence numbers");
-            List<Token> inputAtoms = MoleculeToAtoms(s, atoms);
-            foreach (var atom in inputAtoms)
+            List<Token> inputTokens = Tokenize(s, atoms);
+            foreach (var token in inputTokens)
             {
-                Console.WriteLine(PeriodicTable.GetSymbol(atom.Atom.number) + " " + atom.Count);
+                Console.WriteLine(PeriodicTable.GetSymbol(token.Atom.number) + token.Text + " " + token.Count);
             }
         }
-        // Por ahora sin paréntesis
-        private static List<Token> MoleculeToAtoms(string s, Dictionary<string, AtomData> atoms)
+        private static List<Token> Tokenize(string s, Dictionary<string, AtomData> atoms)
         {
-            int parenthesisOpen = 0;
-            List<AtomData> parenthesisAtoms = new();
-            List<AtomData> currentAtoms = [];
             List<Token> tokens = [];
-            Token token = default;
+
             for (int i = 0; i < s.Length; i++)
             {
+                Token token;
+
                 if (s[i].ToString().IsUpperCase())  // Letra mayúscula
                 {
-                    token = GetTokenFromIndesx(s, atoms, ref i);
+                    token = GetAtomTokenFromIndex(s, atoms, ref i);
                     tokens.Add(token);
                 }
-                // else if (s[i].ToString() == "(")
-                // {
-                //     //parenthesisOpen++;
-                //     tokens.Add(token);
-                // }
-                // else if (s[i].ToString() == ")")
-                // {
-                //     if (token[i + 1].ToString().IsNumber()) // Si hay número después del paréntesis
-                //     {
-                //         //token.Multiply(int.Parse(token[i + 1].ToString()));
-                //         token.Count = int.Parse(token[i + 1].ToString());
-                //     }
-                //     currentAtoms.AddRange(token);
-                // }
-                // else
-                //     currentAtoms.AddRange(token);
+
+                if (s[i].ToString() == "(")
+                {
+                    tokens.Add(new(text: "("));
+                }
+                else if (s[i].ToString() == ")")
+                {
+                    token = new(text: ")");
+                    if (i < s.Length && s[i + 1].ToString().IsNumber()) // Si hay número después del paréntesis
+                    {
+                        token.Count = int.Parse(s[i + 1].ToString());
+                    }
+                    tokens.Add(token);
+                }
             }
             return tokens;
         }
@@ -59,14 +55,14 @@ namespace ConsoleApp1
         /// <param name="atoms"></param>
         /// <param name="i"></param>
         /// <returns></returns>
-        private static Token GetTokenFromIndesx(string s, Dictionary<string, AtomData> atoms, ref int i)
+        private static Token GetAtomTokenFromIndex(string s, Dictionary<string, AtomData> atoms, ref int i)
         {
             AtomData atomToAdd;
-            Token token = new();
+            Token token;
             int nextPossibleNumberIndex;
             if (i != s.Length - 1 && s[i + 1].ToString().IsLowerCase()) // Mayúscula-minúscula --> mismo elemento
             {
-                token = atoms[s[i].ToString() + s[i + 1].ToString()]; 
+                token = atoms[s[i].ToString() + s[i + 1].ToString()];
                 nextPossibleNumberIndex = i + 2;
             }
             else                                                        // Mayúscula-mayúscula --> otro elemento
@@ -102,6 +98,7 @@ namespace ConsoleApp1
             public string Formula { get; set; } = formula;
             public double Weight { get; set; } = weight;
         }
+        // Por ahora, esta clase no sirve para NADA, supongo que se puede quitar
         class SubMolecule(List<AtomData> atoms) : IEnumerable<AtomData>
         {
             List<AtomData> Atoms = atoms;
