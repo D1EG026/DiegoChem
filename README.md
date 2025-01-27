@@ -2,4 +2,7 @@
 DiegoChem es (será) un software de resolución de ecuaciones químicas increíblemente complejas.
 * Equilibrar ecuaciones.
 
-Se me ha perdido el Readme anterior (Ahora ya no me pasará otra vez)
+---
+se viene...?
+# DiegoChemIA 🤖
+(DiegoChem + IA)
